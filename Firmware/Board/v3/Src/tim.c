@@ -163,7 +163,7 @@ void MX_TIM1_Init(void)
   }
 
   // Dead time insertion ; For Complementary Outputs.
-  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_ENABLE;               // OSSR bit in BDTR Register. 
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_ENABLE;               // OSSR bit in BDTR Register.
   sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_ENABLE;              // OSSI bit in BDTR Register.
   sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;                   // Disable Lock
   sBreakDeadTimeConfig.DeadTime = TIM_1_8_DEADTIME_CLOCKS;              // Any value between 0-255, takes value from Input Clock not prescaled value.
@@ -195,7 +195,7 @@ void MX_TIM2_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET; // TRGO signal generated only when UG bit of TIMx->EGR register is set.
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
   {
@@ -547,7 +547,7 @@ void HAL_TIM_IC_MspInit(TIM_HandleTypeDef* tim_icHandle)
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* TIM5 interrupt Init */
-    HAL_NVIC_SetPriority(TIM5_IRQn, 5, 0);
+    HAL_NVIC_SetPriority(TIM5_IRQn, 5, 0);  // Sets priority ; Parameters are Priority and sub priority.
     HAL_NVIC_EnableIRQ(TIM5_IRQn);
   /* USER CODE BEGIN TIM5_MspInit 1 */
 
@@ -571,11 +571,11 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* timHandle)
     PA9     ------> TIM1_CH2
     PA10     ------> TIM1_CH3 
     */
-    GPIO_InitStruct.Pin = M0_AL_Pin|M0_BL_Pin|M0_CL_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
+    GPIO_InitStruct.Pin = M0_AL_Pin|M0_BL_Pin|M0_CL_Pin; // Pins
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;              // Alternate Function Mode
+    GPIO_InitStruct.Pull = GPIO_NOPULL;                  // No pull up/pull down
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;         // Speed setup
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;           // Mention the alternate function; Here it is TIM1
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = M0_AH_Pin|M0_BH_Pin|M0_CH_Pin;

@@ -1,0 +1,41 @@
+# Odrive Notes
+## Timers
+**TIM1:**
+This timer is connected to M0 with the following connections:
+- TIM1_CHN : M0_AL_Pin &nbsp; &nbsp; &nbsp; TIM1_CH : M0_AH_Pin
+- TIM2_CHN : M0_BL_Pin &nbsp; &nbsp; &nbsp; TIM2_CH : M0_BH_Pin
+- TIM3_CHN : M0_CL_Pin &nbsp; &nbsp; &nbsp; TIM3_CH : M0_CH_Pin
+
+This timer is configured as PWM Mode 2 with Deadtime insertion. Timer runs in master mode with Output trigger during update event. All the the 4 channels are configured with the 4th channel to be configured as non PWM.
+
+**TIM8:**
+This timer is configured similarly as that for TIM1, and this timer is connected to M1.
+
+**TIM2:**
+This timer manages the Brake Resistor connections and the connections are as follows:
+- TIM2_CH3 : AUX_L_Pin
+- TIM2_CH4 : AUX_H_Pin
+
+This timer is configured as PWM Mode 2. It runs in Master Mode. In this timer the channel 3 is configured with PWM pulse as 0 and OCPolarity as LOW, and the channel 4 is configured with PWM pulse of TIM_APB1_PERIOD_CLOCKS+1 and OCPolarity as HIGH.
+
+**TIM3:**
+The timer is connected to M0 Encoder with the following connections:
+- TIM3_CH1 : M0_ENC_A_Pin
+- TIM3_CH2 : M0_ENC_B_Pin
+
+This timer is initialised with Encoder Mode (Input Capture Mode). The period of the timer is set as 65536 (Max value). 
+
+**TIM4:**
+This timer is configured similarly as that of TIM3, and this timer is connected to M1 Encoder.
+
+**TIM5:**
+This timer is connected to GPIO Pins 3 and 4. Configured in master mode with a period of 0xFFFFFFFF (32 Bit Max).
+The connections are:
+- TIM5_CH3 : GPIO_3_Pin
+- TIM5_CH4 : GPIO_4_Pin
+
+Channel 3 and 4 of the timer is configured in Input Capture mode. This is configured with an interuppt as well, the TIM5_IRQn.
+
+**TIM13:**
+This is not explicitly configured as a master type, Counter is in Up mode with a period of ```(2 * TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR+1)) * ((float)TIM_APB1_CLOCK_HZ / (float)TIM_1_8_CLOCK_HZ) - 1```. This timer is not connected to any Pins. An interrupt, the TIM8_UP_TIM13_IRQn interrupt is also initialised with the timer.
+
