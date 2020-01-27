@@ -90,18 +90,22 @@ void MX_TIM1_Init(void)
   TIM_OC_InitTypeDef sConfigOC;
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
-  htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;
-  htim1.Init.Period = TIM_1_8_PERIOD_CLOCKS;
+  htim1.Instance = TIM1;                                    // Advanced Timer TIM1
+  htim1.Init.Prescaler = 0;                                 // Factor by which the SysClock must be divided/reduced.
+  htim1.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;  // In this mode, Counter counts upwards to the max value and then counts backwards till 0.
+  htim1.Init.Period = TIM_1_8_PERIOD_CLOCKS;                // Max value of the counter before it resets.
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = TIM_1_8_RCR;
+  htim1.Init.RepetitionCounter = TIM_1_8_RCR;               // Number of times the counter can overflow/underflow before updateEvent happens.
+
+  // UpdateEvent Rate = SysClock / [(Prescalar + 1)(Period + 1)(RepetitionCounter + 1)] 
+
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  // Configuring TIM1 to master mode.
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;  // Using internal timer connected to APBx Bus
   if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -117,20 +121,26 @@ void MX_TIM1_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;        // Update event is the trigger output.
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;// Disable master/slave mode of the timer.
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sConfigOC.OCMode = TIM_OCMODE_PWM2;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+  // Configuring the channels in TIM1
+  /* Configuring TIM1 into Output Compare mode ; This mode allows to control the status of output channels when
+    Channel compare Registers (TIMx_CCRx) matches with the timer counter registers (TIMx_CNT) */
+  sConfigOC.OCMode = TIM_OCMODE_PWM2;                 // PWM Mode 2;
+  /* PWM mode 2 = Clear on compare match */
+	/* PWM mode 1 = Set on compare match */
+  sConfigOC.Pulse = 0;                                // This value is stored in CCRx register, this says when to trigger output.
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;         // Output Compare Polarity: Output channel set high when CCRx and CNT register matches.
+  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;       // Defines complimentary output polarity: Complementary output channel high when CCRx and CNT register matches.
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;          // Specifies fast mode; Valid for PWM1 and PWM2 only; fast mode disabled.
+  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;      // Specifies the channel output compare pin state during the timer idle state.
+  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;    // Specifies the complementary channel output compare pin state during idle timer.
+
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -146,19 +156,21 @@ void MX_TIM1_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sConfigOC.OCMode = TIM_OCMODE_TIMING;
+  sConfigOC.OCMode = TIM_OCMODE_TIMING;               // Comparison between registers have no effect on the output.
   if (HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_ENABLE;
-  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_ENABLE;
-  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
-  sBreakDeadTimeConfig.DeadTime = TIM_1_8_DEADTIME_CLOCKS;
-  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
-  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
-  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+  // Dead time insertion ; For Complementary Outputs.
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_ENABLE;               // OSSR bit in BDTR Register. 
+  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_ENABLE;              // OSSI bit in BDTR Register.
+  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;                   // Disable Lock
+  sBreakDeadTimeConfig.DeadTime = TIM_1_8_DEADTIME_CLOCKS;              // Any value between 0-255, takes value from Input Clock not prescaled value.
+  // The deadtime calculation is in a complex way and it depends on the range of values given. Please refer the STM Reference Manual.
+  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;                  // Disable Break
+  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;          // Break is disabled, so this doesn't matter.
+  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;   // AOE bit in BDTR Register. 0 => MOE can only set by software.
   if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
