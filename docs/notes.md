@@ -39,7 +39,7 @@ Channel 3 and 4 of the timer is configured in Input Capture mode. This is config
 **TIM13:**
 This is not explicitly configured as a master type, Counter is in Up mode with a period of ```(2 * TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR+1)) * ((float)TIM_APB1_CLOCK_HZ / (float)TIM_1_8_CLOCK_HZ) - 1```. This timer is not connected to any Pins. An interrupt, the TIM8_UP_TIM13_IRQn interrupt is also initialised with the timer.
 
-## ADC (Analog-to-Digital Converters)
+## ADC
 **ADC1:**
 This ADC is running in Single-Channel Single Conversion Mode with a resolution of 12 bits and with a prescalar factor of 4.
 This ADC is connected to the following pins:
@@ -52,7 +52,7 @@ This ADC is connected to the following pins:
 - ADC1_IN5 : AUX_TEMP_Pin
 - ADC1_IN6 : VBUS_S_Pin
 
-The ADC has a configured interrupt ADC_IRQn.
+This ADC is configured to have a Software Trigger and it has a configured interrupt ADC_IRQn.
 
 Channel 6 (VBUS_S_Pin) is configured as regular channel with rank 1 and with sampling time of 3 Cycles. This same channel is also configured as Injected channel of rank 1 with the same sample time as that of regular channel. The number of conversions is set as 1 (hence Single Mode). This injected channel is triggered by the trigger from TIM1 timer. [The above injection settings only applies to Channel 6]. Also this ADC is configured in DMA Mode at DMA2 Stream0.
 
@@ -72,9 +72,9 @@ This ADC is connected to the following pins:
 
 The ADC2 is configured to be triggered with rising edge of the trigger from TIM8 timer. ADC2 also has a configured interrupt ADC_IRQn.
 
-Channel 13 (M1_IB_Pin) is configured as regular channel with rank 1 and with sampling time of 3 Cycles. 
+Channel 13 (M1_IB_Pin) is configured as regular channel with rank 1 and with sampling time of 3 Cycles.
 
-Channel 10 (M0_IB_Pin) is configured as an injected channel with rank 1, with number of injected conversions set to 1 (Single Mode). This channel also has the sampling time of 3 Cycles. This channel is triggered by the trigger from the TIM1 timer.
+Channel 10 (M0_IB_Pin) is configured as an injected channel with rank 1, with number of injected conversions set to 1 (Single Mode). This channel also has the sampling time of 3 Cycles. This injection channel is triggered by the trigger from the TIM1 timer.
 
 **ADC3:**
 This ADC is running in Single-Channel Single Conversion Mode with a resolution of 12 bits and with a prescalar factor of 4.
@@ -88,4 +88,4 @@ The ADC3 is configured to be triggered with the rising edge of the trigger from 
 
 Channel 12 (M1_IC_Pin) is configured as a regular channel with rank 1 and sampling time of 3 Cycles.
 
-Channel 11 (M0_IC_Pin) is configured as an injected channel with rank 1, with number of injected conversions set to 1 (Single Mode). This channel also has the sampling time of 3 Cycles. This channel is triggered by the trigger from the TIM1 timer.
+Channel 11 (M0_IC_Pin) is configured as an injected channel with rank 1, with number of injected conversions set to 1 (Single Mode). This channel also has the sampling time of 3 Cycles. This injection channel is triggered by the trigger from the TIM1 timer.
