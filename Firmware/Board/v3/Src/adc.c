@@ -77,18 +77,18 @@ void MX_ADC1_Init(void)
 
     /**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
     */
-  hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
-  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
-  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Instance = ADC1;                                            
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;           // Peripheral clock is divided by a factor of 4.
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B;                     // The resolution is set as 12-bit.
+  hadc1.Init.ScanConvMode = DISABLE;                              // Conversion is performed in single mode.
+  hadc1.Init.ContinuousConvMode = DISABLE;                        // Here it is not in continous-conversion Mode.
+  hadc1.Init.DiscontinuousConvMode = DISABLE;                     
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
-  hadc1.Init.DMAContinuousRequests = DISABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;               // In software mode, so external triggers disabled.
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;                     // Data stored will be aligned right.
+  hadc1.Init.NbrOfConversion = 1;                                 // Number of conversions in regular ADC group.   
+  hadc1.Init.DMAContinuousRequests = DISABLE;                     
+  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;                  // End of conversion flag selection, this is set for single conversion.
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -108,10 +108,10 @@ void MX_ADC1_Init(void)
     */
   sConfigInjected.InjectedChannel = ADC_CHANNEL_6;
   sConfigInjected.InjectedRank = 1;
-  sConfigInjected.InjectedNbrOfConversion = 1;
+  sConfigInjected.InjectedNbrOfConversion = 1;                                      // Number of injected conversions is set as 1. (for this particular channel)
   sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_3CYCLES;
-  sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONVEDGE_RISING;
-  sConfigInjected.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJECCONV_T1_TRGO;
+  sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONVEDGE_RISING; // ADC to be triggered in the rising edge.
+  sConfigInjected.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJECCONV_T1_TRGO;        // Trigger is the TRGO update event in TIM1
   sConfigInjected.AutoInjectedConv = DISABLE;
   sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
   sConfigInjected.InjectedOffset = 0;
@@ -261,7 +261,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 
     /* ADC1 DMA Init */
     /* ADC1 Init */
-    hdma_adc1.Instance = DMA2_Stream0;
+    hdma_adc1.Instance = DMA2_Stream0;                            // (???) DMA to be Learned.
     hdma_adc1.Init.Channel = DMA_CHANNEL_0;
     hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
     hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;

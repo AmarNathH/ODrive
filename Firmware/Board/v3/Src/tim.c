@@ -548,6 +548,11 @@ void HAL_TIM_IC_MspInit(TIM_HandleTypeDef* tim_icHandle)
 
     /* TIM5 interrupt Init */
     HAL_NVIC_SetPriority(TIM5_IRQn, 5, 0);  // Sets priority ; Parameters are Priority and sub priority.
+    
+    /* The priority decides which interrupt to be given priority when another interrupt is called during,
+    the execution of another interrupt handler. The sub priority decides which Interrupt handler should 
+    continue execution from the pending state, after higher priority interrupt exits */
+    
     HAL_NVIC_EnableIRQ(TIM5_IRQn);
   /* USER CODE BEGIN TIM5_MspInit 1 */
 
