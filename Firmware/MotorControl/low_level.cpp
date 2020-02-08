@@ -203,11 +203,11 @@ void start_adc_pwm() {
     __HAL_ADC_ENABLE(&hadc3);
     // Warp field stabilize.
     osDelay(2);
-    __HAL_ADC_ENABLE_IT(&hadc1, ADC_IT_JEOC);
+    __HAL_ADC_ENABLE_IT(&hadc1, ADC_IT_JEOC); // ADC_IT_JEOC: Injected channel end of conversion interrupt.
     __HAL_ADC_ENABLE_IT(&hadc2, ADC_IT_JEOC);
     __HAL_ADC_ENABLE_IT(&hadc3, ADC_IT_JEOC);
     __HAL_ADC_ENABLE_IT(&hadc2, ADC_IT_EOC);
-    __HAL_ADC_ENABLE_IT(&hadc3, ADC_IT_EOC);
+    __HAL_ADC_ENABLE_IT(&hadc3, ADC_IT_EOC); // ADC_IT_EOC: Regular channel end of conversion interrupt.
 
     // Ensure that debug halting of the core doesn't leave the motor PWM running
     __HAL_DBGMCU_FREEZE_TIM1();
@@ -334,11 +334,11 @@ void start_general_purpose_adc() {
     hadc1.Init.ContinuousConvMode = ENABLE;
     hadc1.Init.DiscontinuousConvMode = DISABLE;
     hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-    hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+    hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;                   // Software triggered
     hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-    hadc1.Init.NbrOfConversion = ADC_CHANNEL_COUNT;
+    hadc1.Init.NbrOfConversion = ADC_CHANNEL_COUNT;                     // ADC Configured for all channels
     hadc1.Init.DMAContinuousRequests = ENABLE;
-    hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+    hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;                      // Set End of conversion bit for every single channel's conversion
     if (HAL_ADC_Init(&hadc1) != HAL_OK)
     {
         _Error_Handler((char*)__FILE__, __LINE__);

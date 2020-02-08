@@ -6,7 +6,7 @@ This timer is connected to M0 with the following connections:
 - TIM2_CHN : M0_BL_Pin &nbsp; &nbsp; &nbsp; TIM2_CH : M0_BH_Pin
 - TIM3_CHN : M0_CL_Pin &nbsp; &nbsp; &nbsp; TIM3_CH : M0_CH_Pin
 
-This timer is configured as PWM Mode 2 with Deadtime insertion. Timer runs in master mode with Output trigger during update event. All the the 4 channels are configured with the 4th channel to be configured as non PWM. This has one enabled interrupt, the TIM1_UP_TIM10_IRQn.
+This timer is configured as PWM Mode 2 with Deadtime insertion. Timer runs in master mode with Master Output trigger during update event. All the the 4 channels are configured with the 4th channel to be configured as non PWM. This has one enabled interrupt, the TIM1_UP_TIM10_IRQn.
 
 **TIM8:**
 This timer is configured similarly as that for TIM1, and this timer is connected to M1. This timer has two interrupts, the TIM8_UP_TIM13_IRQn and TIM8_TRG_COM_TIM14_IRQn.
@@ -57,6 +57,8 @@ This ADC is configured to have a Software Trigger and it has a configured interr
 Channel 6 (VBUS_S_Pin) is configured as regular channel with rank 1 and with sampling time of 3 Cycles. This same channel is also configured as Injected channel of rank 1 with the same sample time as that of regular channel. The number of conversions is set as 1 (hence Single Mode). This injected channel is triggered by the trigger from TIM1 timer. [The above injection settings only applies to Channel 6]. Also this ADC is configured in DMA Mode at DMA2 Stream0.
 
 The rest of the channels are not configured at all, hence this ADC will be dealing with VBUS_S_Pin only.
+
+Later this ADC is reconfigured when the function ```start_general_purpose_adc()``` is called. Here the ADC is configured as continous scan conversion mode (in all channels). The channel ranks for conversion is configured to be in the increasing order of there channel number. The ADC data for all channels from DMA is stored in ```adc_measurements_``` array. The End of conversion bit for the ADC is set to Single Conversion, therefore the bit is set every time when a channel conversion is done. The injection channels remains same and are not seperately configured in this function.
 
 **ADC2:**
 This ADC is running in Single-Channel Single Conversion Mode with a resolution of 12 bits and with a prescalar factor of 4.
